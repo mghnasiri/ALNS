@@ -6,7 +6,8 @@ import os
 import pandas as pd
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp
 #from output_manager import visualize_graph
-from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion
+from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 
 
 def main():
@@ -43,21 +44,40 @@ def main():
         initial_tour = Nearest_Neighbor_Heuristic(G, depot)  # Generate an initial tour starting and ending at the depot
         print("Initial TSP Tour:", initial_tour) 
         
-        tsp_tour = Christofides_Algorithm(G,depot)
-        print("TSP Tour using Christofides' Algorithm:", tsp_tour)
+        #initial_tour = Christofides_Algorithm(G,depot)
+        #print("TSP Tour using Christofides' Algorithm:", initial_tour)
        
-        tsp_tour = Minimum_Spanning_Tree_MST_Based_Heuristic(G,depot)
-        print("Initial TSP Tour (MST Based Heuristic):", tsp_tour)
+        #initial_tour = Minimum_Spanning_Tree_MST_Based_Heuristic(G,depot)
+        #print("Initial TSP Tour (MST Based Heuristic):", initial_tour)
         
-        tsp_tour = Randomized_Heuristics(G,depot)
-        print("TSP Tour (Randomized Heuristic):", tsp_tour)
+        #initial_tour = Randomized_Heuristics(G,depot)
+        #print("TSP Tour (Randomized Heuristic):", initial_tour)
         
         
-        tsp_tour = Farthest_Insertion(G,depot)
-        print("TSP Tour (Farthest Insertion):", tsp_tour)
+        #initial_tour = Farthest_Insertion(G,depot)
+        #print("TSP Tour (Farthest Insertion):", initial_tour)
         
-        tsp_tour = Cheapest_Insertion(G,depot)
-        print("TSP Tour (Cheapest_Insertion):", tsp_tour)
+        
+        #initial_tour = Cheapest_Insertion(G,depot)
+        #print("TSP Tour (Cheapest_Insertion):", initial_tour)
+        
+        #initial_tour = Savings_Algorithm(G,depot)
+        #print("TSP Tour (Savings Algorithm):", initial_tour)
+             
+        
+        removal_count = 2  # Number of nodes to remove
+        #new_tour, removed_nodes = Random_Removal(initial_tour, removal_count)
+        #print("New Tour after Random Removal:", new_tour)
+        #print("Removed Nodes:", removed_nodes)
+        
+        #new_tour, removed_nodes = Worst_Removal(G, initial_tour, removal_count)
+        #print("New Tour after worst removal:", new_tour)
+        #print("Removed Nodes:", removed_nodes)
+        
+        new_tour, removed_nodes = Shaw_Removal(G, initial_tour, removal_count)
+        print("New Tour after worst removal:", new_tour)
+        print("Removed Nodes:", removed_nodes)
+        
         
         """
         model = solve_TSP_MTZ_problem(G, dem_points, depot, k)

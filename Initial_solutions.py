@@ -1,5 +1,7 @@
 import networkx as nx
 import random
+from itertools import combinations
+
 
 
 def Nearest_Neighbor_Heuristic(G,start_node):
@@ -98,9 +100,40 @@ def Minimum_Spanning_Tree_MST_Based_Heuristic(G,start_node):
     tour.append(start_node)
     return tour
 
-def Savings_Algorithm():
+def Savings_Algorithm(G, start_node):
     
-    return 
+    def calculate_savings(G, start_node):
+        """ Calculate savings for combining two routes into one. """
+        savings = {}
+        for i, j in combinations(G.nodes(), 2):
+            if i != start_node and j != start_node:
+                cost_separate = G[start_node][i]['length'] + G[start_node][j]['length']
+                cost_combined = G[i][j]['length']
+                savings[(i, j)] = cost_separate - cost_combined
+        
+        return savings
+
+    """ Apply the Savings Algorithm to create routes. """
+    routes = [[start_node, node, start_node] for node in G.nodes() if node != start_node]
+    savings = calculate_savings(G, start_node)
+    sorted_savings = sorted(savings.items(), key=lambda x: x[1], reverse=True)
+
+    for (i, j), _ in sorted_savings:
+        route_i = None
+        route_j = None
+        for route in routes:
+            if i in route:
+                route_i = route
+            if j in route:
+                route_j = route
+        if route_i is not route_j and route_i[1] == i and route_j[-2] == j:
+            # Combine routes
+            combined_route = route_j[:-1] + route_i[1:]
+            routes.remove(route_i)
+            routes.remove(route_j)
+            routes.append(combined_route)
+
+    return routes
 
 def Cheapest_Insertion(G,start_node):
     def find_cheapest_insertion(G, tour):
