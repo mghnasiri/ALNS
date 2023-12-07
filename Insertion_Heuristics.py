@@ -129,7 +129,7 @@ def Regret_3_Heuristic (G, tour, removed_nodes):
     return  tour
 
 
-def Regret_N_Heuristic(G, tour, removed_nodes, N):
+def Regret_N_Heuristic(G, tour, removed_nodes, N=5):
     
     def calculate_regret_n(G, tour, node_to_insert, N):
         """
@@ -305,7 +305,7 @@ def Nearest_Insertion(G, tour, removed_nodes):
     return tour 
 
 
-def Random_Insertion(tour, removed_nodes):
+def Random_Insertion(G,tour, removed_nodes):
     """
     Reinsert the removed nodes into the tour using the Random Insertion heuristic.
     

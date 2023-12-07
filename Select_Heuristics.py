@@ -15,25 +15,37 @@ from Insertion_Heuristics import (
 
 def random_select_heuristics():
     initial_heuristics = [
-        Nearest_Neighbor_Heuristic, Christofides_Algorithm, 
-        Minimum_Spanning_Tree_MST_Based_Heuristic, Randomized_Heuristics, 
-        Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
+        Nearest_Neighbor_Heuristic,
+        Christofides_Algorithm, 
+        Minimum_Spanning_Tree_MST_Based_Heuristic,
+        Randomized_Heuristics, 
+        Farthest_Insertion,
+        Cheapest_Insertion,
+        Savings_Algorithm
     ]
-    removal_heuristics = [Random_Removal, Worst_Removal, Shaw_Removal]
+    removal_heuristics = [Random_Removal,
+                          Worst_Removal,
+                          Shaw_Removal
+                          ]
     insertion_heuristics = [
-        Basic_Insertion, Regret_2_Heuristic, Regret_3_Heuristic, 
-        Regret_N_Heuristic, Greedy_Insertion, Best_Insertion, 
-        Cheapest_Insertion, Nearest_Insertion, Random_Insertion, farthest_insertion
+        Basic_Insertion,
+        Regret_2_Heuristic,
+        Regret_3_Heuristic, 
+        Regret_N_Heuristic,
+        Greedy_Insertion,
+        Best_Insertion, 
+        Cheapest_Insertion,
+        Nearest_Insertion,
+        Random_Insertion,
+        farthest_insertion
     ]
 
+
+    
     return (
         random.choice(initial_heuristics),
         random.choice(removal_heuristics),
         random.choice(insertion_heuristics)
     )
 
-initial_heuristic, removal_heuristic, insertion_heuristic = random_select_heuristics()
 
-print("Selected Initial Solution Heuristic:", initial_heuristic.__name__)
-print("Selected Removal Heuristic:", removal_heuristic.__name__)
-print("Selected Insertion Heuristic:", insertion_heuristic.__name__)

@@ -3,6 +3,11 @@ This file  include functions or classes that define your model's behavior, calcu
 # model.py
 import networkx as nx
 import math
+from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
+from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
+from Select_Heuristics import random_select_heuristics
+
 
 def eucl_dist(x1, y1, x2, y2):
     return round(math.sqrt((x1-x2)**2 + (y1-y2)**2))
@@ -41,3 +46,58 @@ def get_dimension_from_tsp(file_path):
                 # Extract the dimension value
                 _, dimension = line.split(':')
                 return int(dimension.strip())
+
+def calculate_tour_length(G, tour):
+    """
+    Calculate the total length of a given TSP tour.
+    
+    :param G: Graph representing the TSP.
+    :param tour: TSP tour as a list of nodes.
+    :return: Total length of the tour.
+    """
+    return sum(G[tour[i]][tour[i + 1]]['length'] for i in range(len(tour) - 1))
+
+
+
+def iterative_improvement_process(G, start_node, num_iterations,removal_count):
+    """
+    Apply an iterative improvement process on a TSP solution.
+    
+    :param G: Graph representing the TSP.
+    :param start_node: Starting node for the TSP tour.
+    :param num_iterations: Number of iterations for the improvement process.
+    :return: Best found TSP tour.
+    """
+    # Select heuristics
+    initial_heuristic, removal_heuristic, insertion_heuristic = random_select_heuristics()
+    
+    print("Selected Initial Solution Heuristic:", initial_heuristic.__name__)
+    print("Selected Removal Heuristic:", removal_heuristic.__name__)
+    print("Selected Insertion Heuristic:", insertion_heuristic.__name__)
+
+    # Generate an initial solution
+    current_tour = initial_heuristic(G, start_node)
+    best_tour = current_tour[:]
+    best_tour_length = calculate_tour_length(G, best_tour)
+
+    for _ in range(num_iterations):
+        # Apply the removal heuristic
+        partial_tour ,removed_nodes = removal_heuristic(G, current_tour,removal_count)
+
+        # Apply the insertion heuristic
+        new_tour = insertion_heuristic(G, partial_tour, removed_nodes)
+
+        # Evaluate the new solution
+        new_tour_length = calculate_tour_length(G, new_tour)
+
+        # Acceptance criterion (can be replaced with more complex strategies)
+        if new_tour_length < best_tour_length:
+            best_tour = new_tour[:]
+            best_tour_length = new_tour_length
+
+        # Update the current tour for the next iteration
+        current_tour = new_tour
+
+    return best_tour
+
+

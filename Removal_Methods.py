@@ -3,7 +3,7 @@ import random
 
 
 
-def Random_Removal(tour,removal_count):
+def Random_Removal(G, tour,removal_count):
     """
     Randomly remove a set number of nodes from the tour.
     
@@ -50,14 +50,15 @@ def Worst_Removal(G, tour, removal_count):
     edge_cost_increase = calculate_edge_cost_increase(G, tour)
     edges_to_remove = sorted(edge_cost_increase, key=lambda x: x[1], reverse=True)[:removal_count]
 
+    removed_nodes = set()
     # Remove the selected edges and rebuild the tour
     for edge, _ in edges_to_remove:
         if edge[0] in tour and edge[1] in tour:
                 index = tour.index(edge[0])
-                tour.pop(index + 1)
+                removed_node = tour.pop(index + 1)
+                removed_nodes.add(removed_node)
+    return tour, list(removed_nodes)
 
-
-    return tour, edges_to_remove
 
 def Shaw_Removal(G, tour, removal_count):
     def calculate_relatedness(G, node, other_node):
@@ -137,7 +138,7 @@ def Related_Removal(G, tour, removal_count):
 
     return new_tour,nodes_to_remove
 
-def Route_Based_Removal( tour, removal_count):
+def Route_Based_Removal(G,  tour, removal_count):
 
     """
     Remove a contiguous segment of the tour.
