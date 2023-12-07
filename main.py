@@ -7,13 +7,13 @@ import pandas as pd
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp
 #from output_manager import visualize_graph
 from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
-from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal
 
 
 def main():
 
     # Load the list of dataset
-    dataset_paths = ['/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil51.tsp'
+    dataset_paths = ['/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp'
                      ]
     for data_path in dataset_paths:
         # data_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil51.tsp'
@@ -75,8 +75,16 @@ def main():
         #print("Removed Nodes:", removed_nodes)
         
         new_tour, removed_nodes = Shaw_Removal(G, initial_tour, removal_count)
-        print("New Tour after worst removal:", new_tour)
+        print("New Tour after Shaw_Removal:", new_tour)
         print("Removed Nodes:", removed_nodes)
+        
+        #new_tour, removed_nodes = Related_Removal(G, initial_tour, removal_count)
+        #print("New Tour after Related_Removal:", new_tour)
+        #print("Removed Nodes:", removed_nodes)
+        
+        #new_tour, removed_nodes = Route_Based_Removal(initial_tour, removal_count)
+        #print("New Tour after Route_Based_Removal:", new_tour)
+        #print("Removed Nodes:", removed_nodes)
         
         
         """

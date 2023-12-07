@@ -98,10 +98,64 @@ def Shaw_Removal(G, tour, removal_count):
     
     return new_tour,nodes_to_remove
 
-def Related_Removal(G,start_node):
+def Related_Removal(G, tour, removal_count):
+    def calculate_relatedness(G, node, other_node):
+        """
+        Calculate a relatedness score between two nodes based on certain criteria.
 
-    return 
+        :param G: Graph representing the TSP.
+        :param node: The node for which to calculate relatedness.
+        :param other_node: The other node to compare against.
+        :return: A relatedness score (lower means more related).
+        """
+        # Example: Using Euclidean distance combined with other criteria
+        distance = G[node][other_node]['length']
+        # You can incorporate more criteria here to define 'relatedness'
+        return distance
+    """
+    Remove a set of related nodes from the tour using the Related Removal heuristic.
+    
+    :param G: Graph representing the TSP.
+    :param tour: Current TSP tour as a list of nodes.
+    :param removal_count: Number of nodes to remove.
+    :return: A new tour with nodes removed.
+    """
+    if removal_count >= len(tour) - 1:
+        raise ValueError("Removal count must be less than the number of nodes in the tour.")
 
-def Route_Based_Removal(G,start_node):
+    # Randomly select a seed node to base the removal around
+    seed_node = random.choice(tour[1:-1])  # Exclude start/end node if it's the same
 
-    return 
+    # Calculate relatedness of all other nodes to the seed node
+    relatedness_scores = [(node, calculate_relatedness(G, seed_node, node)) for node in tour if node != seed_node]
+    relatedness_scores.sort(key=lambda x: x[1])
+
+    # Select the nodes with the lowest relatedness scores (most related) to remove
+    nodes_to_remove = set([node for node, _ in relatedness_scores[:removal_count]])
+    new_tour = [node for node in tour if node not in nodes_to_remove]
+
+
+    return new_tour,nodes_to_remove
+
+def Route_Based_Removal( tour, removal_count):
+
+    """
+    Remove a contiguous segment of the tour.
+    
+    :param tour: Current TSP tour as a list of nodes.
+    :param removal_length: Length of the tour segment to remove.
+    :return: A new tour with a segment removed.
+    """
+    if removal_count >= len(tour) - 1:
+        raise ValueError("Removal length must be less than the number of nodes in the tour.")
+
+    start_index = random.randint(1, len(tour) - removal_count - 1)  # Excluding the first and last node
+    end_index = start_index + removal_count
+
+    # Remove the segment from the tour
+    new_tour = tour[:start_index] + tour[end_index:]
+
+    # Extract the removed segment for reference
+    removed_segment = tour[start_index:end_index]
+
+    return new_tour, removed_segment 
