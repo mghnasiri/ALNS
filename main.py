@@ -7,8 +7,14 @@ import pandas as pd
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp
 #from output_manager import visualize_graph
 from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
+<<<<<<< HEAD
 from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal
 
+=======
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
+from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
+from Select_Heuristics import random_select_heuristics
+>>>>>>> origin/main
 
 def main():
 
@@ -39,7 +45,7 @@ def main():
             G.edges[i, j]['length'] = eucl_dist(x1, y1, x2, y2)
         cities = parse_coordinates(data_path)
         # Assuming you want to print this based on your original script
-        print(cities)
+        #print(cities)
        
         initial_tour = Nearest_Neighbor_Heuristic(G, depot)  # Generate an initial tour starting and ending at the depot
         print("Initial TSP Tour:", initial_tour) 
@@ -87,6 +93,43 @@ def main():
         #print("Removed Nodes:", removed_nodes)
         
         
+        #updated_tour = Basic_Insertion(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        
+        #updated_tour = Regret_2_Heuristic(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        
+        #updated_tour = Regret_3_Heuristic(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        #updated_tour = Regret_N_Heuristic(G, new_tour, removed_nodes,2)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        #updated_tour = Greedy_Insertion(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        #updated_tour = Best_Insertion(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        #updated_tour = Cheapest_Insertion(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        #updated_tour = Nearest_Insertion(G, new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        
+        #updated_tour = Random_Insertion(new_tour, removed_nodes)
+        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        updated_tour = farthest_insertion(G,new_tour, removed_nodes)
+        print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
+        
+        
+        
+        
+        
         """
         model = solve_TSP_MTZ_problem(G, dem_points, depot, k)
         
@@ -100,6 +143,9 @@ def main():
            visualize_graph(G, depot, nx, x, my_pos, results,
                         dataset_name_with_extension, output_file_path)
         """
+
+
+
 
 if __name__ == "__main__":
     main()
