@@ -13,6 +13,7 @@ from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm
 from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
+from output_manager import visualize_graph,plot_length_improvement
 
 
 
@@ -21,13 +22,15 @@ def main():
     results = []
 
     # Load the list of dataset
-    dataset_paths = ['/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+    dataset_paths = [#'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
-                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp'
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp',
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp'
+
                      ]
     for data_path in dataset_paths:
         
@@ -51,8 +54,8 @@ def main():
         k = 1                       # number of vehicles
         depot = 0
         dem_points = list(range(1, n+1))  # nodes 1, 2, ..., 20
-        removal_count = 1  # Number of nodes to remove
-        num_iterations = 10  # Number of iterations for improvement
+        removal_count = 2  # Number of nodes to remove
+        num_iterations = 100  # Number of iterations for improvement
         best_tour = None
         best_length = float('inf')
         start_time = time.time()
@@ -162,7 +165,9 @@ def main():
             AdaptiveHeuristicSelector.insertion_heuristics
         )
         
-
+        # Initialize lists to track lengths
+        best_lengths = []
+        current_lengths = []
         convergence_data = []
 
         for i in range(num_iterations):
@@ -241,9 +246,20 @@ def main():
                         # Print the best tour and its length
             print("Best Tour:", best_tour)
             logging.info(f'Best Tour: = {best_tour}')
+            best_lengths.append(best_length)
+            current_lengths.append(current_length)
 
             print("Length of Best Tour:", best_length)
             logging.info(f'Length of Best Tour: = {best_length}')
+            # If graph visualization is needed
+        
+        output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
+        output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+
+
+        visualize_graph(G, depot,nx, best_tour,my_pos, dataset_name_with_extension, output_file_path)
+        plot_length_improvement(best_lengths, current_lengths, output_file_path2,dataset_name_with_extension,dpi=300,title='My Algorithm Length Improvement')
+
 
         end_time = time.time()
         
