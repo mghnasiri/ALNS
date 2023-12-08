@@ -135,7 +135,7 @@ def Savings_Algorithm(G, start_node):
 
     return routes
 
-def Cheapest_Insertion(G,start_node):
+def Cheapest_Insertion_Ini(G,start_node):
     def find_cheapest_insertion(G, tour):
         """ Find the cheapest node and position to insert into the existing tour. """
         min_increase = float('inf')

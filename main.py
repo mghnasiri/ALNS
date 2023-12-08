@@ -6,10 +6,11 @@ import os
 import pandas as pd
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp,calculate_tour_length,iterative_improvement_process
 #from output_manager import visualize_graph
-from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion, Savings_Algorithm
+from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm
 from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
-from Select_Heuristics import random_select_heuristics
+from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
+
 
 def main():
 
@@ -31,7 +32,9 @@ def main():
         depot = 0
         dem_points = list(range(1, n+1))  # nodes 1, 2, ..., 20
         removal_count = 1  # Number of nodes to remove
-        num_iterations = 100000  # Number of iterations for improvement
+        num_iterations = 1000  # Number of iterations for improvement
+        best_tour = None
+        best_length = float('inf')
 
         G = create_graph(data_subset, num_data_points)
         cities = parse_coordinates(data_path)
@@ -124,15 +127,58 @@ def main():
         #updated_tour = farthest_insertion(G,new_tour, removed_nodes)
         #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
         
-        best_tour = iterative_improvement_process(G, depot, num_iterations,removal_count)
-        best_tour_length = calculate_tour_length(G, best_tour)
+        #best_tour = iterative_improvement_process(G, depot, num_iterations,removal_count)
+        #best_tour_length = calculate_tour_length(G, best_tour)
 
-        print("Best TSP Tour:", best_tour)
-        print("Total Length of Best Tour:", best_tour_length)
+        #print("Best TSP Tour:", best_tour)
+        #print("Total Length of Best Tour:", best_tour_length)
         
+        # Initialize the adaptive heuristic selector
+        selector = AdaptiveHeuristicSelector(
+            AdaptiveHeuristicSelector.initial_heuristics,
+            AdaptiveHeuristicSelector.removal_heuristics,
+            AdaptiveHeuristicSelector.insertion_heuristics
+        )
         
+
         
+        for i in range(num_iterations):
+
+                # Select and apply the initial solution heuristic
+            initial_heuristic = selector.select_heuristic('initial')
+            tour = initial_heuristic(G, depot)
+
+            # Select and apply the removal heuristic
+            removal_heuristic = selector.select_heuristic('removal')
+            tour, removed_nodes = removal_heuristic(G, tour, removal_count)
+
+            # Select and apply the insertion heuristic
+            insertion_heuristic = selector.select_heuristic('insertion')
+            tour = insertion_heuristic(G, tour, removed_nodes)  # Pass removed_nodes here
+            
+            current_length = calculate_tour_length(G, tour)
+            improvement = current_length < best_length
+            if improvement:
+                best_tour, best_length = tour, current_length
+                
+            # Update heuristic scores using the instance
+            selector.update_heuristic_score(initial_heuristic, improvement, 'initial')
+            selector.update_heuristic_score(removal_heuristic, improvement, 'removal')
+            selector.update_heuristic_score(insertion_heuristic, improvement, 'insertion')
+
+            # Print information about the iteration (optional)
+            print(f"Iteration {i + 1}: Length of Tour = {current_length}")
+                        # Print the best tour and its length
+            print("Best Tour:", best_tour)
+            print("Length of Best Tour:", best_length)
         
+
+
+
+
+
+
+
         
         """
         model = solve_TSP_MTZ_problem(G, dem_points, depot, k)
