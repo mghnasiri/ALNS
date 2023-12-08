@@ -15,26 +15,29 @@ from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heu
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
 
 
-# Configure logging
-logging.basicConfig(filename='output.log', level=logging.INFO)
-
-# Example usage
-logging.info("This is an info message")
 
 def main():
      
     results = []
 
     # Load the list of dataset
-    dataset_paths = [#'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+    dataset_paths = ['/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
-                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp'
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp'
                      ]
     for data_path in dataset_paths:
+        
+        # Configure logging
+        for handler in logging.root.handlers[:]:
+            logging.root.removeHandler(handler)        
+        
+        logging.basicConfig(filename=os.path.splitext(os.path.basename(data_path))[0], level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+        logging.info(f'Processing dataset: {data_path}')
+        
         # data_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil51.tsp'
         dataset_name_with_extension = os.path.basename(data_path)
         data = pd.read_csv(data_path)
@@ -170,53 +173,78 @@ def main():
             initial_heuristic = selector.select_heuristic('initial')
             tour = initial_heuristic(G, depot)
             print(f"Initial Tour: {tour}")
+            logging.info(f'nitial Tour: {tour}')
+
 
 
             # Select and apply the removal heuristic
             removal_heuristic = selector.select_heuristic('removal')
             tour, removed_nodes = removal_heuristic(G, tour, removal_count)
             print(f"Tour after Removal: {tour}, Removed Nodes: {removed_nodes}")
+            logging.info(f'Tour after Removal: {tour}, Removed Nodes: {removed_nodes}')
+
 
 
             # Select and apply the insertion heuristic
             insertion_heuristic = selector.select_heuristic('insertion')
             tour = insertion_heuristic(G, tour, removed_nodes)  # Pass removed_nodes here
             print(f"Tour after Insertion: {tour}")
+            logging.info(f'Tour after Insertion: {tour}')
+
 
             
             
             current_length = calculate_tour_length(G, tour)
             print(f"Length of Current Tour: {current_length}")
+            logging.info(f'Length of Current Tour: {current_length}')
+
 
             # Check for improvement
             if current_length < best_length:
                 best_length = current_length
                 best_tour = tour
                 print(f"New Best Tour Found: {best_tour}, Length: {best_length}")
+                logging.info(f'New Best Tour Found: {best_tour}, Length: {best_length}')
+
 
             else:
                 print("No improvement in this iteration.")
+                logging.info(f'No improvement in this iteration.')
+
                 
                 # Update scores
             success = current_length < best_length
             selector.update_heuristic_score(initial_heuristic, success, 'initial')
             print(f"Updated score for {initial_heuristic.__name__}: {selector.initial_solution_scores[initial_heuristic]}")
+            logging.info(f'Updated score for {initial_heuristic.__name__}: {selector.initial_solution_scores[initial_heuristic]}')
+
 
             selector.update_heuristic_score(removal_heuristic, success, 'removal')
             print(f"Updated score for {removal_heuristic.__name__}: {selector.removal_method_scores[removal_heuristic]}")
+            logging.info(f'Updated score for {removal_heuristic.__name__}: {selector.removal_method_scores[removal_heuristic]}')
+
 
             selector.update_heuristic_score(insertion_heuristic, success, 'insertion')
             print(f"Updated score for {insertion_heuristic.__name__}: {selector.insertion_heuristic_scores[insertion_heuristic]}")
+            logging.info(f'Updated score for {insertion_heuristic.__name__}: {selector.insertion_heuristic_scores[insertion_heuristic]}')
+
 
 
             print()  # Blank line for better readability
+            logging.info(f'')
+
 
             # Print information about the iteration (optional)
             print(f"Iteration {i + 1}: Length of Tour = {current_length}")
+            logging.info(f'Iteration {i + 1}: Length of Tour = {current_length}')
+
                         # Print the best tour and its length
             print("Best Tour:", best_tour)
+            logging.info(f'Best Tour: = {best_tour}')
+
             print("Length of Best Tour:", best_length)
-        
+            logging.info(f'Length of Best Tour: = {best_length}')
+
         end_time = time.time()
         
 
