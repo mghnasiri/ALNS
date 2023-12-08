@@ -156,6 +156,7 @@ def main():
             insertion_heuristic = selector.select_heuristic('insertion')
             tour = insertion_heuristic(G, tour, removed_nodes)  # Pass removed_nodes here
             
+            
             current_length = calculate_tour_length(G, tour)
             improvement = current_length < best_length
             if improvement:
