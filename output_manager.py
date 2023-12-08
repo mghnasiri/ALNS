@@ -1,4 +1,2 @@
-
-def  Initial_Solutions_Output():
-    
-    return 
+import matplotlib.pyplot as plt
+import pandas as pd

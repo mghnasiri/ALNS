@@ -5,6 +5,7 @@ import networkx as nx
 import os
 import pandas as pd
 import logging
+import time
 
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp,calculate_tour_length,iterative_improvement_process
 #from output_manager import visualize_graph
@@ -13,6 +14,7 @@ from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
 
+
 # Configure logging
 logging.basicConfig(filename='output.log', level=logging.INFO)
 
@@ -20,6 +22,8 @@ logging.basicConfig(filename='output.log', level=logging.INFO)
 logging.info("This is an info message")
 
 def main():
+     
+    results = []
 
     # Load the list of dataset
     dataset_paths = [#'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
@@ -45,9 +49,11 @@ def main():
         depot = 0
         dem_points = list(range(1, n+1))  # nodes 1, 2, ..., 20
         removal_count = 1  # Number of nodes to remove
-        num_iterations = 100  # Number of iterations for improvement
+        num_iterations = 10  # Number of iterations for improvement
         best_tour = None
         best_length = float('inf')
+        start_time = time.time()
+
 
         G = create_graph(data_subset, num_data_points)
         cities = parse_coordinates(data_path)
@@ -154,7 +160,8 @@ def main():
         )
         
 
-        
+        convergence_data = []
+
         for i in range(num_iterations):
             print(f"--- Iteration {i + 1} ---")
 
@@ -186,6 +193,7 @@ def main():
                 best_length = current_length
                 best_tour = tour
                 print(f"New Best Tour Found: {best_tour}, Length: {best_length}")
+
             else:
                 print("No improvement in this iteration.")
                 
@@ -209,30 +217,8 @@ def main():
             print("Best Tour:", best_tour)
             print("Length of Best Tour:", best_length)
         
-
-
-
-
-
-
-
+        end_time = time.time()
         
-        """
-        model = solve_TSP_MTZ_problem(G, dem_points, depot, k)
-        
-        # Assuming model is the returned Gurobi model from solve_TSP_MTZ_problem
-        x_vars = model.getVars()
-        x = {e: x_var for e, x_var in zip(G.edges, x_vars)}
-        results = get_optimization_results(model)
-        
-        output_file_path = f"/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/{dataset_name_with_extension}.png"
-        # If graph visualization is needed
-           visualize_graph(G, depot, nx, x, my_pos, results,
-                        dataset_name_with_extension, output_file_path)
-        """
-
-
-
 
 if __name__ == "__main__":
     main()
