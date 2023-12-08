@@ -4,6 +4,8 @@ It acts as the orchestrator, calling the necessary functions from each module an
 import networkx as nx
 import os
 import pandas as pd
+import logging
+
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp,calculate_tour_length,iterative_improvement_process
 #from output_manager import visualize_graph
 from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm
@@ -11,6 +13,11 @@ from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
 
+# Configure logging
+logging.basicConfig(filename='output.log', level=logging.INFO)
+
+# Example usage
+logging.info("This is an info message")
 
 def main():
 
@@ -32,7 +39,7 @@ def main():
         depot = 0
         dem_points = list(range(1, n+1))  # nodes 1, 2, ..., 20
         removal_count = 1  # Number of nodes to remove
-        num_iterations = 1000  # Number of iterations for improvement
+        num_iterations = 100  # Number of iterations for improvement
         best_tour = None
         best_length = float('inf')
 
@@ -143,29 +150,52 @@ def main():
 
         
         for i in range(num_iterations):
+            print(f"--- Iteration {i + 1} ---")
+
 
                 # Select and apply the initial solution heuristic
             initial_heuristic = selector.select_heuristic('initial')
             tour = initial_heuristic(G, depot)
+            print(f"Initial Tour: {tour}")
+
 
             # Select and apply the removal heuristic
             removal_heuristic = selector.select_heuristic('removal')
             tour, removed_nodes = removal_heuristic(G, tour, removal_count)
+            print(f"Tour after Removal: {tour}, Removed Nodes: {removed_nodes}")
+
 
             # Select and apply the insertion heuristic
             insertion_heuristic = selector.select_heuristic('insertion')
             tour = insertion_heuristic(G, tour, removed_nodes)  # Pass removed_nodes here
+            print(f"Tour after Insertion: {tour}")
+
             
             
             current_length = calculate_tour_length(G, tour)
-            improvement = current_length < best_length
-            if improvement:
-                best_tour, best_length = tour, current_length
+            print(f"Length of Current Tour: {current_length}")
+
+            # Check for improvement
+            if current_length < best_length:
+                best_length = current_length
+                best_tour = tour
+                print(f"New Best Tour Found: {best_tour}, Length: {best_length}")
+            else:
+                print("No improvement in this iteration.")
                 
-            # Update heuristic scores using the instance
-            selector.update_heuristic_score(initial_heuristic, improvement, 'initial')
-            selector.update_heuristic_score(removal_heuristic, improvement, 'removal')
-            selector.update_heuristic_score(insertion_heuristic, improvement, 'insertion')
+                # Update scores
+            success = current_length < best_length
+            selector.update_heuristic_score(initial_heuristic, success, 'initial')
+            print(f"Updated score for {initial_heuristic.__name__}: {selector.initial_solution_scores[initial_heuristic]}")
+
+            selector.update_heuristic_score(removal_heuristic, success, 'removal')
+            print(f"Updated score for {removal_heuristic.__name__}: {selector.removal_method_scores[removal_heuristic]}")
+
+            selector.update_heuristic_score(insertion_heuristic, success, 'insertion')
+            print(f"Updated score for {insertion_heuristic.__name__}: {selector.insertion_heuristic_scores[insertion_heuristic]}")
+
+
+            print()  # Blank line for better readability
 
             # Print information about the iteration (optional)
             print(f"Iteration {i + 1}: Length of Tour = {current_length}")
