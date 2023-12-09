@@ -22,13 +22,13 @@ def main():
     results = []
 
     # Load the list of dataset
-    dataset_paths = [#'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
-                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+    dataset_paths = ['/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
+                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
-                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp',
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp',
                      #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp'
 
                      ]
@@ -253,8 +253,11 @@ def main():
             logging.info(f'Length of Best Tour: = {best_length}')
             # If graph visualization is needed
         
-        output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
-        output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+        #output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
+        #output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+
+        output_file_path = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + '.png'
+        output_file_path2 = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
 
 
         visualize_graph(G, depot,nx, best_tour,my_pos, dataset_name_with_extension, output_file_path)

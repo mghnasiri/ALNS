@@ -7,7 +7,8 @@ from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm
 from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics
-
+from acceptance_functions import simulated_annealing_acceptance,accept_if_better
+import random
 
 def eucl_dist(x1, y1, x2, y2):
     return round(math.sqrt((x1-x2)**2 + (y1-y2)**2))
@@ -90,7 +91,16 @@ def iterative_improvement_process(G, start_node, num_iterations,removal_count):
         # Evaluate the new solution
         new_tour_length = calculate_tour_length(G, new_tour)
 
-        # Acceptance criterion (can be replaced with more complex strategies)
+        
+        
+        
+        # Acceptance criterion (can be replaced with more complex strategies)   
+        """acceptance_strategy = 'simulated_annealing'  # or 'accept_if_better'
+        if acceptance_strategy == 'accept_if_better':
+            accept = accept_if_better(best_tour_length, new_tour_length)
+        elif acceptance_strategy == 'simulated_annealing': """
+            
+
         if new_tour_length < best_tour_length:
             best_tour = new_tour[:]
             best_tour_length = new_tour_length
