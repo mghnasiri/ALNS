@@ -10,27 +10,39 @@ import time
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp,calculate_tour_length,iterative_improvement_process
 #from output_manager import visualize_graph
 from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm
-from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
-from output_manager import visualize_graph,plot_length_improvement
+from output_manager import visualize_graph,plot_length_improvement,plot_heuristic_weights
 
 
 
 def main():
      
     results = []
+    
 
     # Load the list of dataset
-    dataset_paths = ['/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
-                     '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+    dataset_paths = [#'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
+                     #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
                      #'/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
-                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp',
-                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp'
-
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/First Python Code/eil51.tsp'
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/d198.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroA100.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroA150.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroB100.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroC100.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroE100.tsp',
+                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/berlin52.tsp'
                      ]
     for data_path in dataset_paths:
         
@@ -54,8 +66,8 @@ def main():
         k = 1                       # number of vehicles
         depot = 0
         dem_points = list(range(1, n+1))  # nodes 1, 2, ..., 20
-        removal_count = 2  # Number of nodes to remove
-        num_iterations = 100  # Number of iterations for improvement
+        removal_count = 1  # Number of nodes to remove
+        num_iterations = 10  # Number of iterations for improvement
         best_tour = None
         best_length = float('inf')
         start_time = time.time()
@@ -168,7 +180,12 @@ def main():
         # Initialize lists to track lengths
         best_lengths = []
         current_lengths = []
-        convergence_data = []
+        # Initialize dictionaries to track weights
+        removal_weights_dict = {'Random_Removal': [], 'Worst_Removal': [], 'Shaw_Removal': [], 'Related_Removal': [], 'Route_Based_Removal': []}
+        insertion_weights_dict = {'Basic_Insertion': [], 'Regret_2_Heuristic': [], 'Regret_3_Heuristic':[],'Regret_N_Heuristic':[],'Greedy_Insertion':[],'Best_Insertion':[],'Cheapest_Insertion':[],'Savings_Algorithm':[],'Nearest_Insertion' :[],'Random_Insertion' :[],'farthest_insertion' :[]}
+        Initial_weights_dict = {'Nearest_Neighbor_Heuristic': [], 'Christofides_Algorithm': [], 'Minimum_Spanning_Tree_MST_Based_Heuristic':[],'Randomized_Heuristics':[],'Farthest_Insertion':[],'Cheapest_Insertion_Ini':[],'Savings_Algorithm':[]}
+
+
 
         for i in range(num_iterations):
             print(f"--- Iteration {i + 1} ---")
@@ -178,7 +195,7 @@ def main():
             initial_heuristic = selector.select_heuristic('initial')
             tour = initial_heuristic(G, depot)
             print(f"Initial Tour: {tour}")
-            logging.info(f'nitial Tour: {tour}')
+            logging.info(f'Initial Tour: {tour}')
 
 
 
@@ -248,21 +265,86 @@ def main():
             logging.info(f'Best Tour: = {best_tour}')
             best_lengths.append(best_length)
             current_lengths.append(current_length)
+            # Update weights in dictionaries
+            #Initial_weights_dict[initial_heuristic.__name__].append(selector.initial_solution_scores[initial_heuristic])
+            #removal_weights_dict[removal_heuristic.__name__].append(selector.removal_method_scores[removal_heuristic])
+            #insertion_weights_dict[insertion_heuristic.__name__].append(selector.insertion_heuristic_scores[insertion_heuristic])
+            
+            # ... ALNS algorithm steps ...
+            # Assuming 'removal_heuristic' is the heuristic used in this iteration
+            current_removal_heuristic = removal_heuristic.__name__
+
+            # Update weights for all removal heuristics
+            for heuristic_name in removal_weights_dict.keys():
+                if heuristic_name == current_removal_heuristic:
+                    # Heuristic was used in this iteration, append its current weight
+                    removal_weights_dict[heuristic_name].append(selector.removal_method_scores[removal_heuristic])
+                else:
+                    # Heuristic was not used, append the last known weight
+                    if removal_weights_dict[heuristic_name]:  # Check if the list is not empty
+                        removal_weights_dict[heuristic_name].append(removal_weights_dict[heuristic_name][-1])
+                    else:
+                        # If the list is empty (first iteration), append an initial weight
+                        removal_weights_dict[heuristic_name].append(1)
+            
+            # Assuming 'insertion_heuristic' is the heuristic used in this iteration for insertion
+            current_insertion_heuristic = insertion_heuristic.__name__
+
+            # Update weights for all insertion heuristics
+            for heuristic_name in insertion_weights_dict.keys():
+                if heuristic_name == current_insertion_heuristic:
+                    # Heuristic was used in this iteration, append its current weight
+                    insertion_weights_dict[heuristic_name].append(selector.insertion_heuristic_scores[insertion_heuristic])
+                else:
+                    # Heuristic was not used, append the last known weight
+                    if insertion_weights_dict[heuristic_name]:  # Check if the list is not empty
+                        insertion_weights_dict[heuristic_name].append(insertion_weights_dict[heuristic_name][-1])
+                    else:
+                        # If the list is empty (first iteration), append an initial weight
+                        insertion_weights_dict[heuristic_name].append(1)
+            
+            
+            # Assuming 'initial_heuristic' is the heuristic used in this iteration
+            current_initial_heuristic = initial_heuristic.__name__
+            # Update weights for all initial heuristics
+            for heuristic_name in Initial_weights_dict.keys():
+                if heuristic_name == current_initial_heuristic:
+                    # Heuristic was used in this iteration, append its current weight
+                    Initial_weights_dict[heuristic_name].append(selector.initial_solution_scores[initial_heuristic])
+                else:
+                    # Heuristic was not used, append the last known weight
+                    if Initial_weights_dict[heuristic_name]:  # Check if the list is not empty
+                        Initial_weights_dict[heuristic_name].append(Initial_weights_dict[heuristic_name][-1])
+                    else:
+                        # If the list is empty (first iteration), append an initial weight
+                        Initial_weights_dict[heuristic_name].append(1)
+
+
+
+
 
             print("Length of Best Tour:", best_length)
             logging.info(f'Length of Best Tour: = {best_length}')
             # If graph visualization is needed
         
-        #output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
-        #output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+        output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
+        output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+        #output_file_path = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + '.png'
+        #output_file_path2 = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
 
-        output_file_path = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + '.png'
-        output_file_path2 = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
+        output_file_path3 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Removal Heuristics.png'
+        output_file_path4 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Insertion Heuristics.png'
+        output_file_path5 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Initial Heuristics.png'
 
 
         visualize_graph(G, depot,nx, best_tour,my_pos, dataset_name_with_extension, output_file_path)
         plot_length_improvement(best_lengths, current_lengths, output_file_path2,dataset_name_with_extension,dpi=300,title='My Algorithm Length Improvement')
-
+        plot_heuristic_weights(num_iterations, Initial_weights_dict,output_file_path5,dpi=300, title='Weights Progression - Initial Heuristics')
+        plot_heuristic_weights(num_iterations, removal_weights_dict, output_file_path3,dpi=300, title='Weights Progression - Removal Heuristics')
+        plot_heuristic_weights(num_iterations, insertion_weights_dict,output_file_path4,dpi=300, title='Weights Progression - Insertion Heuristics')
+        # After the ALNS loop
+        for heuristic, weights in removal_weights_dict.items():
+            print(f"{heuristic}: Length = {len(weights)}, Data = {weights[:10]}")  # Print the first 10 weights
 
         end_time = time.time()
         

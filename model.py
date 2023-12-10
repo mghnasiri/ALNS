@@ -4,7 +4,7 @@ This file  include functions or classes that define your model's behavior, calcu
 import networkx as nx
 import math
 from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm
-from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal
+from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics
 from acceptance_functions import simulated_annealing_acceptance,accept_if_better

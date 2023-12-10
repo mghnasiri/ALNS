@@ -53,7 +53,19 @@ def plot_length_improvement(best_lengths, current_lengths,file_path,dataset_name
 
     plt.savefig(file_path,dpi=dpi) 
     plt.close()  # Close the figure after saving to avoid interference with the next plot
+    
+    
+def plot_heuristic_weights(iterations, heuristic_weights,file_path,dpi, title):
+    plt.figure(figsize=(12, 8))
+    for heuristic, weights in heuristic_weights.items():
+        if weights:  # Ensure the list is not empty
+            plt.plot(range(len(weights)), weights, label=heuristic)
+    plt.xlabel('Iteration')
+    plt.ylabel('Weight')
+    plt.legend()
 
+    plt.savefig(file_path,dpi=dpi) 
+    plt.close()  # Close the figure after saving to avoid interference with the next plot    
 
     
 
