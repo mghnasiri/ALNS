@@ -369,3 +369,4 @@ def farthest_insertion(G, tour, removed_nodes):
 
 
 
+
