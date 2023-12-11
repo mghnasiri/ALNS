@@ -189,7 +189,7 @@ def Cheapest_Insertion_Ini(G,start_node):
     
     return tour
 
-def  Farthest_Insertion(G,start_node):
+def  Farthest_Insertion_INI(G,start_node):
     
     def find_farthest_node(G, subset):
         """ Find the farthest node from the subset of nodes already in the tour. """
@@ -257,7 +257,7 @@ def basic_greedy_heuristic(G, start_node):
     return tour
 
 
-def regret_2_heuristic(G, start_node):
+def regret_2_heuristic_ini(G, start_node):
     N=2
     def calculate_regret(G, current_route, candidate_node, depot):
         best_cost = float('inf')
@@ -290,7 +290,7 @@ def regret_2_heuristic(G, start_node):
 
     return current_route
 
-def regret_3_heuristic(G, start_node):
+def regret_3_heuristic_ini(G, start_node):
     N = 3
     
     def calculate_insertion_costs(route, node_to_insert, graph, N):
