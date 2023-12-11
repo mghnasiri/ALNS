@@ -9,7 +9,7 @@ import time
 
 from model import create_graph, parse_coordinates, eucl_dist, get_dimension_from_tsp,calculate_tour_length,iterative_improvement_process
 #from output_manager import visualize_graph
-from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm,basic_greedy_heuristic,regret_2_heuristic,regret_3_heuristic,regret_n_heuristic
+from Initial_solutions import Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm,basic_greedy_heuristic,regret_2_heuristic,regret_3_heuristic
 from Removal_Methods import Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal
 from Insertion_Heuristics import Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion
 from Select_Heuristics import random_select_heuristics,AdaptiveHeuristicSelector
@@ -33,9 +33,9 @@ def main():
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil51.tsp',
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/eil101.tsp',
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/ch130.tsp',
-                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
-                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
-                     '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/fl417.tsp',
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/dsj1000.tsp',
+                     #'/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/brd14051.tsp',
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/d198.tsp',
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroA100.tsp',
                      '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/Datasets/TSPLIB/ALL_tsp/kroA150.tsp',
@@ -70,7 +70,6 @@ def main():
         num_iterations = 10  # Number of iterations for improvement
         best_tour = None
         best_length = float('inf')
-        start_time = time.time()
 
 
         G = create_graph(data_subset, num_data_points)
@@ -82,272 +81,83 @@ def main():
             (x2, y2) = my_pos[j]
             G.edges[i, j]['length'] = eucl_dist(x1, y1, x2, y2)
         cities = parse_coordinates(data_path)
+  
         # Assuming you want to print this based on your original script
         #print(cities)
-       
-        #initial_tour = Nearest_Neighbor_Heuristic(G, depot)  # Generate an initial tour starting and ending at the depot
-        #print("Initial TSP Tour:", initial_tour) 
-        
-        #initial_tour = Christofides_Algorithm(G,depot)
-        #print("TSP Tour using Christofides' Algorithm:", initial_tour)
-       
-        #initial_tour = Minimum_Spanning_Tree_MST_Based_Heuristic(G,depot)
-        #print("Initial TSP Tour (MST Based Heuristic):", initial_tour)
-        
-        #initial_tour = Randomized_Heuristics(G,depot)
-        #print("TSP Tour (Randomized Heuristic):", initial_tour)
-        
-        
-        #initial_tour = Farthest_Insertion(G,depot)
-        #print("TSP Tour (Farthest Insertion):", initial_tour)
-        
-        
-        #initial_tour = Cheapest_Insertion(G,depot)
-        #print("TSP Tour (Cheapest_Insertion):", initial_tour)
-        
-        #initial_tour = Savings_Algorithm(G,depot)
-        #print("TSP Tour (Savings Algorithm):", initial_tour)
-             
-        
-        
-        #new_tour, removed_nodes = Random_Removal(G, initial_tour, removal_count)
-        #print("New Tour after Random Removal:", new_tour)
-        #print("Removed Nodes:", removed_nodes)
-        
-        #new_tour, removed_nodes = Worst_Removal(G, initial_tour, removal_count)
-        #print("New Tour after worst removal:", new_tour)
-        #print("Removed Nodes:", removed_nodes)
-        
-        #new_tour, removed_nodes = Shaw_Removal(G, initial_tour, removal_count)
-        #print("New Tour after Shaw_Removal:", new_tour)
-        #print("Removed Nodes:", removed_nodes)
-        
-        #new_tour, removed_nodes = Related_Removal(G, initial_tour, removal_count)
-        #print("New Tour after Related_Removal:", new_tour)
-        #print("Removed Nodes:", removed_nodes)
-        
-        #new_tour, removed_nodes = Route_Based_Removal(G, initial_tour, removal_count)
-        #print("New Tour after Route_Based_Removal:", new_tour)
-        #print("Removed Nodes:", removed_nodes)
-        
-        
-        #updated_tour = Basic_Insertion(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        
-        #updated_tour = Regret_2_Heuristic(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        
-        #updated_tour = Regret_3_Heuristic(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = Regret_N_Heuristic(G, new_tour, removed_nodes,2)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = Greedy_Insertion(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = Best_Insertion(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = Cheapest_Insertion(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = Nearest_Insertion(G, new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        
-        #updated_tour = Random_Insertion(G,new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #updated_tour = farthest_insertion(G,new_tour, removed_nodes)
-        #print("Updated TSP Tour after Reinserting Removed Nodes:", updated_tour)
-        
-        #best_tour = iterative_improvement_process(G, depot, num_iterations,removal_count)
-        #best_tour_length = calculate_tour_length(G, best_tour)
-
-        #print("Best TSP Tour:", best_tour)
-        #print("Total Length of Best Tour:", best_tour_length)
-        
-        # Initialize the adaptive heuristic selector
-        selector = AdaptiveHeuristicSelector(
-            AdaptiveHeuristicSelector.initial_heuristics,
-            AdaptiveHeuristicSelector.removal_heuristics,
-            AdaptiveHeuristicSelector.insertion_heuristics
-        )
-        
-        # Initialize lists to track lengths
+        # List your heuristics
         best_lengths = []
         current_lengths = []
-        # Initialize dictionaries to track weights
-        removal_weights_dict = {'Random_Removal': [], 'Worst_Removal': [], 'Shaw_Removal': [], 'Related_Removal': [], 'Route_Based_Removal': []}
-        insertion_weights_dict = {'Basic_Insertion': [], 'Regret_2_Heuristic': [], 'Regret_3_Heuristic':[],'Regret_N_Heuristic':[],'Greedy_Insertion':[],'Best_Insertion':[],'Cheapest_Insertion':[],'Savings_Algorithm':[],'Nearest_Insertion' :[],'Random_Insertion' :[],'farthest_insertion' :[]}
-        Initial_weights_dict = {'Nearest_Neighbor_Heuristic': [], 'Christofides_Algorithm': [], 'Minimum_Spanning_Tree_MST_Based_Heuristic':[],'Randomized_Heuristics':[],'Farthest_Insertion':[],'Cheapest_Insertion_Ini':[],'Savings_Algorithm':[],'basic_greedy_heuristic':[],'regret_2_heuristic':[],'regret_3_heuristic' :[],'regret_n_heuristic' :[]}
+        initial_heuristics = [Nearest_Neighbor_Heuristic, Christofides_Algorithm,Minimum_Spanning_Tree_MST_Based_Heuristic,Randomized_Heuristics,Farthest_Insertion, Cheapest_Insertion_Ini, Savings_Algorithm,basic_greedy_heuristic,regret_2_heuristic]
+        removal_heuristics = [Random_Removal, Worst_Removal, Shaw_Removal,Related_Removal,Route_Based_Removal]
+        insertion_heuristics = [Basic_Insertion,Regret_2_Heuristic,Regret_3_Heuristic, Regret_N_Heuristic,Greedy_Insertion,Best_Insertion, Cheapest_Insertion,Nearest_Insertion,Random_Insertion, farthest_insertion]        
+        # Loop through all combinations
+        for initial in initial_heuristics:
+            for removal in removal_heuristics:
+                for insertion in insertion_heuristics:                    
+                    for i in range(10):
+                        start_time = time.time()
+                        total_runtime = 0
+                        total_tour_length = 0
+                        num_iterations = 100
+                        initial_tour = initial(G,depot)
+                        print(f"Initial Tour: {initial} {initial_tour}")
+                        logging.info(f'{initial} - Initial Tour: {initial_tour}')
+                        best_solution_cost = calculate_tour_length(G, initial_tour)
+                        print(f"best_solution_cost: {initial} {best_solution_cost}")
+                        logging.info(f'{initial} - Initial Tour: {best_solution_cost}')
+                        
+                        for j in range(num_iterations):
+                            print(f"--- Iteration {j + 1} ---")
+                            logging.info(f"--- Iteration {j + 1} ---")
+                            # Removal
+                            new_tour, removed_nodes = removal(G, initial_tour, removal_count)
+                            print(f"{removal} - Tour after Removal: {new_tour}, Removed Nodes: {removed_nodes}")
+                            logging.info(f'{removal} - Tour after Removal: {new_tour}, Removed Nodes: {removed_nodes}')
+                            
+                            # Select and apply the insertion heuristic
+                            new_tour = insertion(G, new_tour, removed_nodes)  # Pass removed_nodes here
+                            print(f"{insertion} -Tour after Insertion: {new_tour}")
+                            logging.info(f'{insertion} -Tour after Insertion: {new_tour}')
+                            current_length = calculate_tour_length(G, new_tour)
+                            print(f"{insertion} - Length of Current Tour: {current_length}")
+                            logging.info(f'{insertion} - Length of Current Tour: {current_length}')
+                            # Check for improvement
+                            if current_length < best_length:
+                                best_length = current_length
+                                best_tour = new_tour
+                                print(f"New Best Tour Found: {best_tour}, Length: {best_length}")
+                                logging.info(f'New Best Tour Found: {best_tour}, Length: {best_length}')
+                            else:
+                                print("No improvement in this iteration.")
+                                logging.info(f'No improvement in this iteration.')
+                            print()  # Blank line for better readability
+                        
+                        logging.info(f'')
+                        # Print information about the iteration (optional)
+                        print(f"Iteration {j + 1}: Length of Tour = {current_length}")
+                        logging.info(f'Iteration {j + 1}: Length of Tour = {current_length}')
 
-
-
-        for i in range(num_iterations):
-            print(f"--- Iteration {i + 1} ---")
-
-
-                # Select and apply the initial solution heuristic
-            initial_heuristic = selector.select_heuristic('initial')
-            tour = initial_heuristic(G, depot)
-            print(f"Initial Tour: {tour}")
-            logging.info(f'Initial Tour: {tour}')
-
-
-
-            # Select and apply the removal heuristic
-            removal_heuristic = selector.select_heuristic('removal')
-            tour, removed_nodes = removal_heuristic(G, tour, removal_count)
-            print(f"Tour after Removal: {tour}, Removed Nodes: {removed_nodes}")
-            logging.info(f'Tour after Removal: {tour}, Removed Nodes: {removed_nodes}')
-
-
-
-            # Select and apply the insertion heuristic
-            insertion_heuristic = selector.select_heuristic('insertion')
-            tour = insertion_heuristic(G, tour, removed_nodes)  # Pass removed_nodes here
-            print(f"Tour after Insertion: {tour}")
-            logging.info(f'Tour after Insertion: {tour}')
-
-
-            
-            
-            current_length = calculate_tour_length(G, tour)
-            print(f"Length of Current Tour: {current_length}")
-            logging.info(f'Length of Current Tour: {current_length}')
-
-
-            # Check for improvement
-            if current_length < best_length:
-                best_length = current_length
-                best_tour = tour
-                print(f"New Best Tour Found: {best_tour}, Length: {best_length}")
-                logging.info(f'New Best Tour Found: {best_tour}, Length: {best_length}')
-
-
-            else:
-                print("No improvement in this iteration.")
-                logging.info(f'No improvement in this iteration.')
+                                    # Print the best tour and its length
+                        print("Best Tour:", best_tour)
+                        logging.info(f'Best Tour: = {best_tour}')
+                        best_lengths.append(best_length)
+                        current_lengths.append(current_length)
+                                
+                        end_time = time.time()        
+                        best_tour_length = calculate_tour_length(G, initial_tour)
+                        logging.info(f'Length of Best Tour: = {best_tour_length}')
+                        runtime = end_time - start_time  # Calculate runtime
+                        logging.info(f'Length of runtime: = {runtime}')
+                        total_runtime += runtime
+                        total_tour_length += best_tour_length
+                    average_runtime = total_runtime / 10
+                    average_tour_length = total_tour_length / 10
+                    logging.info(f"Average Runtime: {average_runtime:.4f} seconds")
+                    logging.info(f"Average Best Tour Length: {average_tour_length}")
 
                 
-                # Update scores
-            success = current_length < best_length
-            selector.update_heuristic_score(initial_heuristic, success, 'initial')
-            print(f"Updated score for {initial_heuristic.__name__}: {selector.initial_solution_scores[initial_heuristic]}")
-            logging.info(f'Updated score for {initial_heuristic.__name__}: {selector.initial_solution_scores[initial_heuristic]}')
+                            
 
-
-            selector.update_heuristic_score(removal_heuristic, success, 'removal')
-            print(f"Updated score for {removal_heuristic.__name__}: {selector.removal_method_scores[removal_heuristic]}")
-            logging.info(f'Updated score for {removal_heuristic.__name__}: {selector.removal_method_scores[removal_heuristic]}')
-
-
-            selector.update_heuristic_score(insertion_heuristic, success, 'insertion')
-            print(f"Updated score for {insertion_heuristic.__name__}: {selector.insertion_heuristic_scores[insertion_heuristic]}")
-            logging.info(f'Updated score for {insertion_heuristic.__name__}: {selector.insertion_heuristic_scores[insertion_heuristic]}')
-
-
-
-            print()  # Blank line for better readability
-            logging.info(f'')
-
-
-            # Print information about the iteration (optional)
-            print(f"Iteration {i + 1}: Length of Tour = {current_length}")
-            logging.info(f'Iteration {i + 1}: Length of Tour = {current_length}')
-
-                        # Print the best tour and its length
-            print("Best Tour:", best_tour)
-            logging.info(f'Best Tour: = {best_tour}')
-            best_lengths.append(best_length)
-            current_lengths.append(current_length)
-            # Update weights in dictionaries
-            #Initial_weights_dict[initial_heuristic.__name__].append(selector.initial_solution_scores[initial_heuristic])
-            #removal_weights_dict[removal_heuristic.__name__].append(selector.removal_method_scores[removal_heuristic])
-            #insertion_weights_dict[insertion_heuristic.__name__].append(selector.insertion_heuristic_scores[insertion_heuristic])
-            
-            # ... ALNS algorithm steps ...
-            # Assuming 'removal_heuristic' is the heuristic used in this iteration
-            current_removal_heuristic = removal_heuristic.__name__
-
-            # Update weights for all removal heuristics
-            for heuristic_name in removal_weights_dict.keys():
-                if heuristic_name == current_removal_heuristic:
-                    # Heuristic was used in this iteration, append its current weight
-                    removal_weights_dict[heuristic_name].append(selector.removal_method_scores[removal_heuristic])
-                else:
-                    # Heuristic was not used, append the last known weight
-                    if removal_weights_dict[heuristic_name]:  # Check if the list is not empty
-                        removal_weights_dict[heuristic_name].append(removal_weights_dict[heuristic_name][-1])
-                    else:
-                        # If the list is empty (first iteration), append an initial weight
-                        removal_weights_dict[heuristic_name].append(1)
-            
-            # Assuming 'insertion_heuristic' is the heuristic used in this iteration for insertion
-            current_insertion_heuristic = insertion_heuristic.__name__
-
-            # Update weights for all insertion heuristics
-            for heuristic_name in insertion_weights_dict.keys():
-                if heuristic_name == current_insertion_heuristic:
-                    # Heuristic was used in this iteration, append its current weight
-                    insertion_weights_dict[heuristic_name].append(selector.insertion_heuristic_scores[insertion_heuristic])
-                else:
-                    # Heuristic was not used, append the last known weight
-                    if insertion_weights_dict[heuristic_name]:  # Check if the list is not empty
-                        insertion_weights_dict[heuristic_name].append(insertion_weights_dict[heuristic_name][-1])
-                    else:
-                        # If the list is empty (first iteration), append an initial weight
-                        insertion_weights_dict[heuristic_name].append(1)
-            
-            
-            # Assuming 'initial_heuristic' is the heuristic used in this iteration
-            current_initial_heuristic = initial_heuristic.__name__
-            # Update weights for all initial heuristics
-            for heuristic_name in Initial_weights_dict.keys():
-                if heuristic_name == current_initial_heuristic:
-                    # Heuristic was used in this iteration, append its current weight
-                    Initial_weights_dict[heuristic_name].append(selector.initial_solution_scores[initial_heuristic])
-                else:
-                    # Heuristic was not used, append the last known weight
-                    if Initial_weights_dict[heuristic_name]:  # Check if the list is not empty
-                        Initial_weights_dict[heuristic_name].append(Initial_weights_dict[heuristic_name][-1])
-                    else:
-                        # If the list is empty (first iteration), append an initial weight
-                        Initial_weights_dict[heuristic_name].append(1)
-
-
-
-
-
-            print("Length of Best Tour:", best_length)
-            logging.info(f'Length of Best Tour: = {best_length}')
-            # If graph visualization is needed
-        
-        output_file_path = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + '.png'
-        output_file_path2 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
-        #output_file_path = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + '.png'
-        #output_file_path2 = '/home/centor.ulaval.ca/ghafomoh/Downloads/ADM-7900/ALNS/ALNS/' + dataset_name_with_extension + 'plot_length_improvement.png'
-
-        output_file_path3 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Removal Heuristics.png'
-        output_file_path4 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Insertion Heuristics.png'
-        output_file_path5 = '/Users/Mgh.Nasiri/Documents/1- Academic Documents/3- Laval Universitè/Diriges/Codes/ALNS/ALNS2/ALNS/' + dataset_name_with_extension + 'Weights Progression - Initial Heuristics.png'
-
-
-        visualize_graph(G, depot,nx, best_tour,my_pos, dataset_name_with_extension, output_file_path)
-        plot_length_improvement(best_lengths, current_lengths, output_file_path2,dataset_name_with_extension,dpi=300,title='My Algorithm Length Improvement')
-        plot_heuristic_weights(num_iterations, Initial_weights_dict,output_file_path5,dpi=300, title='Weights Progression - Initial Heuristics')
-        plot_heuristic_weights(num_iterations, removal_weights_dict, output_file_path3,dpi=300, title='Weights Progression - Removal Heuristics')
-        plot_heuristic_weights(num_iterations, insertion_weights_dict,output_file_path4,dpi=300, title='Weights Progression - Insertion Heuristics')
-        # After the ALNS loop
-        for heuristic, weights in removal_weights_dict.items():
-            print(f"{heuristic}: Length = {len(weights)}, Data = {weights[:10]}")  # Print the first 10 weights
-
-        end_time = time.time()
-        
-
+                    
 if __name__ == "__main__":
     main()

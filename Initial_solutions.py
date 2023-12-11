@@ -101,6 +101,29 @@ def Minimum_Spanning_Tree_MST_Based_Heuristic(G,start_node):
     return tour
 
 def Savings_Algorithm(G, start_node):
+    def merge_routes_into_tour(routes):
+        tour = routes[0]
+        remaining_routes = routes[1:]
+
+        while remaining_routes:
+            closest_distance = float('inf')
+            closest_route_index = -1
+            insert_position = -1
+
+            for i, remaining_route in enumerate(remaining_routes):
+                for j in range(1, len(tour)):
+                    distance = G[tour[j-1]][remaining_route[1]]['length'] + G[remaining_route[-2]][tour[j]]['length'] - G[tour[j-1]][tour[j]]['length']
+                    if distance < closest_distance:
+                        closest_distance = distance
+                        closest_route_index = i
+                        insert_position = j
+
+            # Insert the closest route at the best position
+            tour = tour[:insert_position] + remaining_routes[closest_route_index][1:-1] + tour[insert_position:]
+            del remaining_routes[closest_route_index]
+
+        return tour        
+    
     
     def calculate_savings(G, start_node):
         """ Calculate savings for combining two routes into one. """
@@ -132,8 +155,10 @@ def Savings_Algorithm(G, start_node):
             routes.remove(route_i)
             routes.remove(route_j)
             routes.append(combined_route)
+    single_tour = merge_routes_into_tour(routes)
 
-    return routes
+
+    return single_tour
 
 def Cheapest_Insertion_Ini(G,start_node):
     def find_cheapest_insertion(G, tour):
@@ -233,106 +258,53 @@ def basic_greedy_heuristic(G, start_node):
 
 
 def regret_2_heuristic(G, start_node):
+    N=2
+    def calculate_regret(G, current_route, candidate_node, depot):
+        best_cost = float('inf')
+        second_best_cost = float('inf')
+
+        # Iterate through possible insertion points, skipping the depot node
+        for i in range(1, len(current_route) - 1):
+            insertion_cost = G[current_route[i-1]][candidate_node]['length'] + \
+                            G[candidate_node][current_route[i]]['length'] - \
+                            G[current_route[i-1]][current_route[i]]['length']
+            
+            if insertion_cost < best_cost:
+                second_best_cost = best_cost
+                best_cost = insertion_cost
+            elif insertion_cost < second_best_cost:
+                second_best_cost = insertion_cost
+
+        regret = second_best_cost - best_cost
+        return regret if regret > 0 else 0
+
     
-    
-    def calculate_insertion_cost(route, node_to_insert, graph):
-        min_cost = float('inf')
-        best_position = None
-
-        for i in range(1, len(route)):
-            current_cost = graph.get_edge_data(route[i - 1], node_to_insert)['length'] + \
-                        graph.get_edge_data(node_to_insert, route[i])['length'] - \
-                        graph.get_edge_data(route[i - 1], route[i])['length']
-
-            if current_cost < min_cost:
-                min_cost = current_cost
-                best_position = i
-
-        return min_cost, best_position
-
-
-    tour = [start_node, start_node]  # Start and end at the start_node
+    current_route = [start_node]
     unvisited_nodes = set(G.nodes) - {start_node}
 
     while unvisited_nodes:
-        regret_values = {}
+            node_regrets = {node: calculate_regret(G, current_route, node,start_node) for node in unvisited_nodes}
+            next_node = max(node_regrets, key=node_regrets.get)
+            current_route.append(next_node)
+            unvisited_nodes.remove(next_node)
 
-        for node in unvisited_nodes:
-            # Calculate best and second-best insertion cost
-            best_cost, best_pos = calculate_insertion_cost(tour, node, G)
-            # Temporarily insert at best position to calculate second-best cost
-            temp_route = tour[:]
-            temp_route.insert(best_pos, node)
-            second_best_cost, _ = calculate_insertion_cost(temp_route, node, G)
-
-            regret_values[node] = second_best_cost - best_cost
-
-        # Choose the node with the highest regret
-        node_to_add = max(regret_values, key=regret_values.get)
-        _, best_insert_pos = calculate_insertion_cost(tour, node_to_add, G)
-        tour.insert(best_insert_pos, node_to_add)
-        unvisited_nodes.remove(node_to_add)
-
-    return tour
+    return current_route
 
 def regret_3_heuristic(G, start_node):
-    
-    def calculate_insertion_costs(route, node_to_insert, graph):
-        costs = []
-
-        for i in range(1, len(route)):
-            current_cost = graph.get_edge_data(route[i - 1], node_to_insert)['length'] + \
-                        graph.get_edge_data(node_to_insert, route[i])['length'] - \
-                        graph.get_edge_data(route[i - 1], route[i])['length']
-            costs.append((current_cost, i))
-
-        # Sort by cost and return the three best positions
-        costs.sort(key=lambda x: x[0])
-        return costs[:3]  # Return the costs and positions for the three best insertions
-
-    
-    tour = [start_node, start_node]  # Start and end at the start_node
-    unvisited_nodes = set(G.nodes) - {start_node}
-
-    while unvisited_nodes:
-        regret_values = {}
-
-        for node in unvisited_nodes:
-            best_costs = calculate_insertion_costs(tour, node, G)
-            
-            # If less than 3 insertion points, use what's available
-            if len(best_costs) < 3:
-                regret = sum(cost for cost, _ in best_costs) / len(best_costs)
-            else:
-                regret = best_costs[2][0] - best_costs[0][0]  # Difference between third-best and best
-
-            regret_values[node] = regret
-
-        # Choose the node with the highest regret
-        node_to_add = max(regret_values, key=regret_values.get)
-        _, best_insert_pos = best_costs[0]
-        tour.insert(best_insert_pos, node_to_add)
-        unvisited_nodes.remove(node_to_add)
-
-    return tour
-
-
-def regret_n_heuristic(G, start_node, N):
+    N = 3
     
     def calculate_insertion_costs(route, node_to_insert, graph, N):
         costs = []
-
-        for i in range(1, len(route)):
-            current_cost = graph.get_edge_data(route[i - 1], node_to_insert)['length'] + \
-                        graph.get_edge_data(node_to_insert, route[i])['length'] - \
-                        graph.get_edge_data(route[i - 1], route[i])['length']
-            costs.append((current_cost, i))
-
-        # Sort by cost and return the N best positions
+        for i in range(1, len(route) - 1):
+            if graph.get_edge_data(route[i - 1], node_to_insert) and graph.get_edge_data(node_to_insert, route[i]):
+                cost = graph.get_edge_data(route[i - 1], node_to_insert)['length'] + \
+                       graph.get_edge_data(node_to_insert, route[i])['length'] - \
+                       graph.get_edge_data(route[i - 1], route[i])['length']
+                costs.append((cost, i))
         costs.sort(key=lambda x: x[0])
-        return costs[:N]  # Return the costs and positions for the N best insertions
-    
-    tour = [start_node, start_node]  # Start and end at the start_node
+        return costs[:N]
+
+    tour = [start_node, start_node]
     unvisited_nodes = set(G.nodes) - {start_node}
 
     while unvisited_nodes:
@@ -340,21 +312,21 @@ def regret_n_heuristic(G, start_node, N):
 
         for node in unvisited_nodes:
             best_costs = calculate_insertion_costs(tour, node, G, N)
-            
-            if len(best_costs) < N:
-                regret = sum(cost for cost, _ in best_costs) / len(best_costs)
-            else:
-                regret = best_costs[-1][0] - best_costs[0][0]  # Difference between Nth-best and best
+            if best_costs:
+                regret = best_costs[-1][0] - best_costs[0][0] if len(best_costs) == N else 0
+                regret_values[node] = regret
 
-            regret_values[node] = regret
-
-        # Choose the node with the highest regret
-        node_to_add = max(regret_values, key=regret_values.get)
-        _, best_insert_pos = best_costs[0]
-        tour.insert(best_insert_pos, node_to_add)
-        unvisited_nodes.remove(node_to_add)
+        if regret_values:
+            node_to_add = max(regret_values, key=regret_values.get)
+            _, best_insert_pos = best_costs[0]
+            tour.insert(best_insert_pos, node_to_add)
+            unvisited_nodes.remove(node_to_add)
+        else:
+            break  # Break the loop if no node can be added
 
     return tour
+
+
 
 
 

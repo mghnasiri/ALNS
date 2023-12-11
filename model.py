@@ -49,14 +49,15 @@ def get_dimension_from_tsp(file_path):
                 return int(dimension.strip())
 
 def calculate_tour_length(G, tour):
-    """
-    Calculate the total length of a given TSP tour.
-    
-    :param G: Graph representing the TSP.
-    :param tour: TSP tour as a list of nodes.
-    :return: Total length of the tour.
-    """
-    return sum(G[tour[i]][tour[i + 1]]['length'] for i in range(len(tour) - 1))
+    total_length = 0
+    for i in range(len(tour) - 1):
+        if tour[i] in G and tour[i + 1] in G[tour[i]]:
+            total_length += G[tour[i]][tour[i + 1]].get('length', 0)
+        else:
+            print(f"Warning: No edge between {tour[i]} and {tour[i + 1]}")
+            # Handle the missing edge case or break/return as needed
+    return total_length
+
 
 
 
